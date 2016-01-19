@@ -6,7 +6,7 @@
 count=$(batctl -v)
 echo "0 Batman-adv_Version count=$count;"
 ##Router
-count=$(batctl o|wc -l)
+count=$(($(batctl o|wc -l)-3))
 level=0
 if [ $count -ge  500 ]; then level=1; fi;
 if [ $count -ge  600 ]; then level=2; fi;

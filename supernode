@@ -1,0 +1,41 @@
+#!/bin/bash
+#/usr/lib/check_mk_agent/local
+
+#Batman
+##Version
+count=$(batctl -v)
+echo "0 Batman-adv_Version count=$count;"
+##Router
+count=$(batctl o|wc -l)
+level=0
+if [ $count -ge  500 ]; then level=1; fi;
+if [ $count -ge  600 ]; then level=2; fi;
+if [ $count -lt  10 ]; then level=1; fi;
+if [ $count -lt  5 ]; then level=2; fi;
+echo "$level Batman-adv_Router count=$count; $count Router"
+##Clients
+count=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global)
+echo "0 Batman-adv_Clients count=$count; $count Clients"
+#Fastd
+##Version
+count=$(fastd -v)
+echo "0 Fastd_Version count=$count; $count "
+##Instanzen
+count=$(netstat -tulpn|grep -c fastd)
+level=0
+if [ $count -ge  5 ]; then level=1; fi;
+if [ $count -ge  6 ]; then level=2; fi;
+if [ $count -lt  0 ]; then level=2; fi;
+echo "$level Fastd_Instanzen count=$count; $count Fastd Instanzen"
+##Client Peer Limit
+count=$(grep 'peer limit' /etc/fastd/client/fastd.conf | cut -d ' ' -f 3 | cut -d ';' -f 1)
+echo "0 Fastd_Client_Peer_limit count=$count; Fastd peer limit $count"
+#SSH
+##Password auth
+level=0
+if [ $(cat /etc/ssh/sshd_config|grep -c 'PasswordAuthentication no') -lt 0]; then level=2; fi;
+if [ $(cat /etc/ssh/sshd_config|grep -c '#PasswordAuthentication no') -ge 1]; then level=2; fi;
+if [ $(cat /etc/ssh/sshd_config|grep -c 'PasswordAuthentication yes') -ge 1]; then level=2; fi;
+if [ level -ge 2 ]; then echo "$level ssh_passwd_auth count=1; PasswordAuthentication allowed"; fi;
+if [ level -lt 0 ]; then echo "$level ssh_passwd_auth count=0; PasswordAuthentication disabled"; fi;
+

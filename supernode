@@ -1,41 +1,38 @@
 #!/bin/bash
 #/usr/lib/check_mk_agent/local
 
+#Get data
+bat_version=$(batctl -v);
+bat_router=$(($(batctl o|wc -l)-3));
+bat_clients=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global)
+fastd_version=$(fastd -v|cut -d ' ' -f 2);
+fastd_inst=$(netstat -tulpn|grep -c fastd);
+fastd_peer_limit=$(grep 'peer limit' /etc/fastd/client/fastd.conf | cut -d ' ' -f 3 | cut -d ';' -f 1);
+fastd_clients=$(/etc/fastd/fastd-statistics.py -s /tmp/fastd.sock | grep Clients | cut -d ' ' -f 3)
+#Output
 #Batman
 ##Version
-count=$(batctl -v)
-echo "0 Batman-adv_Version count=$count;"
+echo "0 Batman-Version Version=$bat_version;"
 ##Router
-count=$(($(batctl o|wc -l)-3))
 level=0
-if [ $count -ge  500 ]; then level=1; fi;
-if [ $count -ge  600 ]; then level=2; fi;
-if [ $count -lt  10 ]; then level=1; fi;
-if [ $count -lt  5 ]; then level=2; fi;
-echo "$level Batman-adv_Router count=$count; $count Router"
+if [ $bat_router -ge  500 ]; then level=1; fi;
+if [ $bat_router -ge  600 ]; then level=2; fi;
+if [ $bat_router -lt  10 ]; then level=1; fi;
+if [ $bat_router -lt  5 ]; then level=2; fi;
+echo "$level Batman-Router Router=$bat_router; $bat_router Router"
 ##Clients
-count=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global)
-echo "0 Batman-adv_Clients count=$count; $count Clients"
+echo "0 Batman-Clients Clients=$bat_clients; $bat_clients Clients"
 #Fastd
 ##Version
-count=$(fastd -v)
-echo "0 Fastd_Version count=$count; $count "
-##Instanzen
-count=$(netstat -tulpn|grep -c fastd)
-level=0
-if [ $count -ge  5 ]; then level=1; fi;
-if [ $count -ge  6 ]; then level=2; fi;
-if [ $count -lt  0 ]; then level=2; fi;
-echo "$level Fastd_Instanzen count=$count; $count Fastd Instanzen"
+echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version "
+##Instanzenlevel=0
+if [ $fastd_inst -lt  0 ]; then level=2; fi;
+echo "$level Fastd_Instanzen Instanzen=$fastd_inst; $fastd_inst Fastd Instanzen"
 ##Client Peer Limit
-count=$(grep 'peer limit' /etc/fastd/client/fastd.conf | cut -d ' ' -f 3 | cut -d ';' -f 1)
-echo "0 Fastd_Client_Peer_limit count=$count; Fastd peer limit $count"
-#SSH
-##Password auth
-level=0
-if [ $(cat /etc/ssh/sshd_config|grep -c 'PasswordAuthentication no') -lt 0]; then level=2; fi;
-if [ $(cat /etc/ssh/sshd_config|grep -c '#PasswordAuthentication no') -ge 1]; then level=2; fi;
-if [ $(cat /etc/ssh/sshd_config|grep -c 'PasswordAuthentication yes') -ge 1]; then level=2; fi;
-if [ level -ge 2 ]; then echo "$level ssh_passwd_auth count=1; PasswordAuthentication allowed"; fi;
-if [ level -lt 0 ]; then echo "$level ssh_passwd_auth count=0; PasswordAuthentication disabled"; fi;
-
+echo "0 Fastd_Client_Peer_limit Limit=$fastd_peer_limit; Fastd peer limit $fastd_peer_limit"
+##Clients
+if [ $fastd_clients -ge  200 ]; then level=1; fi;
+if [ $fastd_clients -ge  250 ]; then level=2; fi;
+if [ $fastd_clients -lt  10 ]; then level=1; fi;
+if [ $fastd_clients -lt  5 ]; then level=2; fi;
+echo "$level Fastd_Clients Clients=$fastd_clients; $fastd_clients Fastd Clients"

@@ -25,7 +25,8 @@ echo "0 Batman-Clients Clients=$bat_clients; $bat_clients Clients"
 #Fastd
 ##Version
 echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version "
-##Instanzenlevel=0
+##Instanzen
+level=0
 if [ $fastd_inst -lt  0 ]; then level=2; fi;
 echo "$level Fastd_Instanzen Instanzen=$fastd_inst; $fastd_inst Fastd Instanzen"
 ##Client Peer Limit

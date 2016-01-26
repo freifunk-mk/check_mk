@@ -5,24 +5,23 @@
 bat_version=$(batctl -v);
 bat_gateways=$(($(batctl gwl|wc -l)-1));
 bat_router=$(($(batctl o|wc -l)-3));
-bat_clients=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global)
-bat_ips=$(($(batctl dc|wc -l)-2))
-bat_ips_wrong=$(($(sudo batctl dc|grep -v -c $(ifconfig br0|grep 'inet addr:'|cut -d ':' -f 2|cut -d '.' -f 1))-2))
-
+bat_clients=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global);
+bat_ips=$(($(batctl dc|wc -l)-2));
+bat_ips_wrong=$(($(sudo batctl dc|grep -v -c $(ifconfig br0|grep 'inet addr:'|cut -d ':' -f 2|cut -d '.' -f 1))-2));
 fastd_version=$(fastd -v|cut -d ' ' -f 2);
 fastd_inst=$(netstat -tulpn|grep -c fastd);
 fastd_peer_limit=$(grep 'peer limit' /etc/fastd/client/fastd.conf | cut -d ' ' -f 3 | cut -d ';' -f 1);
-fastd_clients=$(/etc/fastd/fastd-statistics.py -s /tmp/fastd.sock | grep Clients | cut -d ' ' -f 3)
+fastd_clients=$(/etc/fastd/fastd-statistics.py -s /tmp/fastd.sock | grep Clients | cut -d ' ' -f 3);
 
 #Output
 ##Batman
 echo "0 Batman-Version Version=$bat_version;"
 echo "P Batman-Gateways Gateways=$bat_gateways;3;5;"
 echo "P Batman-Router Router=$bat_router;10:450;5:500;"
-echo "P Batman-Clients Clients=$bat_clients;5:2000;0:25000; $bat_clients Clients"
-echo "P Batman-IPs IP-Adressen=$bat_ips|Falsche-Adressen=$bat_ips_wrong;1;3;"
+echo "P Batman-Clients Clients=$bat_clients;5:2000;0:25000; $bat_clients Clients";
+echo "P Batman-IPs IP-Adressen=$bat_ips|Falsche-Adressen=$bat_ips_wrong;1;3;";
 ##Fastd
-echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version "
+echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version ";
 echo "P Fastd_Instanzen Instanzen=$fastd_inst;0:5;"
 echo "P Fastd_Client_Peer_limit Limit=$fastd_peer_limit;50:500;0:1000;"
 echo "P Fastd_Clients Clients=$fastd_clients;10:150;5:200;"

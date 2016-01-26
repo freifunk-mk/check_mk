@@ -15,9 +15,7 @@ fastd_clients=$(/etc/fastd/fastd-statistics.py -s /tmp/fastd.sock | grep Clients
 ##Version
 echo "0 Batman-Version Version=$bat_version;"
 ##Gateways
-level=0
-if [ $bat_router -ge  3 ]; then level=1; fi;
-echo "$level Batman-Gateways Gateways=$bat_gateways; $bat_gateways Gateways"
+echo "P Batman-Gateways Gateways=$bat_gateways;3;5; $bat_gateways Gateways"
 ##Router
 level=0
 if [ $bat_router -ge  500 ]; then level=1; fi;
@@ -26,7 +24,7 @@ if [ $bat_router -lt  10 ]; then level=1; fi;
 if [ $bat_router -lt  5 ]; then level=2; fi;
 echo "$level Batman-Router Router=$bat_router; $bat_router Router"
 ##Clients
-echo "0 Batman-Clients Clients=$bat_clients; $bat_clients Clients"
+echo "P Batman-Clients Clients=$bat_clients;5:2000;0:25000; $bat_clients Clients"
 #Fastd
 ##Version
 echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version "

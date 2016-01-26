@@ -23,7 +23,7 @@ echo "P Batman-Router Router=$bat_router;10:450;5:500;"
 echo "P Batman-Clients Clients=$bat_clients;5:2000;0:25000; $bat_clients Clients";
 echo "P Batman-IPs IP-Adressen=$bat_ips|Falsche-Adressen=$bat_ips_wrong;0;3;";
 ##BGP
-echo "P BGP-Sessions IPv4=$bgp4_sessions_up;3:5;0:6|IPv6=$bgp6_sessions_up;3:5;0:6"
+echo "P BGP-Sessions IPv4=$bgp4_sessions_up;4:4;3:5|IPv6=$bgp6_sessions_up;4:4;3:5"
 ##Fastd
 echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version ";
 echo "P Fastd_Instanzen Instanzen=$fastd_inst;0:5;"

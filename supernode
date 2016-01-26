@@ -26,6 +26,6 @@ echo "P Batman-IPs IP-Adressen=$bat_ips|Falsche-Adressen=$bat_ips_wrong;0;3;";
 echo "P BGP-Sessions IPv4=$bgp4_sessions_up;4:4;3:5|IPv6=$bgp6_sessions_up;4:4;3:5"
 ##Fastd
 echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version ";
-echo "P Fastd_Instanzen Instanzen=$fastd_inst;0:5;"
+echo "0 Fastd_Instanzen Instanzen=$fastd_inst;0:5;"
 echo "P Fastd_Client_Peer_limit Limit=$fastd_peer_limit;50:500;0:1000;"
-echo "P Fastd_Clients Clients=$fastd_clients;10:150;5:200;"
+echo "0 Fastd_Clients Clients=$fastd_clients;10:150;5:200;"

@@ -3,6 +3,7 @@
 
 #Get data
 bat_version=$(batctl -v);
+bat_gateways=$(($(batctl gwl|wc -l)-1));
 bat_router=$(($(batctl o|wc -l)-3));
 bat_clients=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global)
 fastd_version=$(fastd -v|cut -d ' ' -f 2);
@@ -13,6 +14,10 @@ fastd_clients=$(/etc/fastd/fastd-statistics.py -s /tmp/fastd.sock | grep Clients
 #Batman
 ##Version
 echo "0 Batman-Version Version=$bat_version;"
+##Gateways
+level=0
+if [ $bat_router -ge  3 ]; then level=1; fi;
+echo "$level Batman-Gateways Gateways=$bat_gateways; $bat_gateways Gateways"
 ##Router
 level=0
 if [ $bat_router -ge  500 ]; then level=1; fi;

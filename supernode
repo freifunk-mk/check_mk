@@ -8,8 +8,6 @@ bat_router=$(($(batctl o|wc -l)-3));
 bat_clients=$(grep -cEo "\[.*W.*\]+" /sys/kernel/debug/batman_adv/bat0/transtable_global);
 bat_ips=$(($(batctl dc|wc -l)-2));
 bat_ips_wrong=$(($(sudo batctl dc|grep -v -c $(ifconfig br0|grep 'inet addr:'|cut -d ':' -f 2|cut -d '.' -f 1))-2));
-bgp4_sessions_up=$(birdc s p|grep BGP|grep -c up)
-bgp6_sessions_up=$(birdc6 s p|grep BGP|grep -c up)
 fastd_version=$(fastd -v|cut -d ' ' -f 2);
 fastd_inst=$(netstat -tulpn|grep -c fastd);
 fastd_peer_limit=$(grep 'peer limit' /etc/fastd/client/fastd.conf | cut -d ' ' -f 3 | cut -d ';' -f 1);
@@ -22,8 +20,6 @@ echo "P Batman-Gateways Gateways=$bat_gateways;3;5;"
 echo "P Batman-Router Router=$bat_router;10:450;5:500;"
 echo "P Batman-Clients Clients=$bat_clients;5:2000;0:25000; $bat_clients Clients";
 echo "P Batman-IPs IP-Adressen=$bat_ips|Falsche-Adressen=$bat_ips_wrong;5;50;";
-##BGP
-echo "P BGP-Sessions IPv4=$bgp4_sessions_up;4:4;3:5|IPv6=$bgp6_sessions_up;4:4;3:5"
 ##Fastd
 echo "0 Fastd_Version Version=$fastd_version; Fastd $fastd_version ";
 echo "0 Fastd_Instanzen Instanzen=$fastd_inst;0:5;"
